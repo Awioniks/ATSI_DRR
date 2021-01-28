@@ -1,7 +1,6 @@
 from time import sleep
 from termcolor import colored
 import math
-import time
 
 
 class Queue:
@@ -28,13 +27,12 @@ class Queue:
             self.packets_in_queue = self.check_packets_in_queue(
                 current_time) + self.packets_to_procceed
 
+        self.last_time_queue_proccessing = current_time
+
         self.packets_to_procceed = 0
         if self.packets_in_queue:
             for _ in range(self.packets_in_queue):
                 if not self.proccess_packet_success():
-                    self.last_time_queue_proccessing = (
-                        current_time + pkts_proccessed * self.service_time
-                    )
                     self.packets_to_procceed = self.packets_in_queue
                     - pkts_proccessed
                     return
@@ -44,23 +42,19 @@ class Queue:
             print(colored(self.queue_id, self.color), " Empty queue")
             self.deficit = 0
             return
-        self.last_time_queue_proccessing = (
-            current_time + pkts_proccessed * self.service_time
-        )
 
     def check_packets_in_queue(self, current_time):
-        print(self.last_time_queue_proccessing, " ", current_time)
         return math.floor(
             (current_time - self.last_time_queue_proccessing)
             / self.occurance_time
         )
 
-    def proccess_packet_success(self, first=False):
+    def proccess_packet_success(self):
         print(
             colored(self.queue_id, self.color),
             "Start Proccessing Packet"
         )
-        if self.deficit < self.packet_size and not first:
+        if self.deficit < self.packet_size:
             print(
                 colored(self.queue_id, self.color),
                 " Deficit is not enough, Packet Size: ",
