@@ -1,11 +1,13 @@
-### ATSI_DRR
+# ATSI_DRR
 
 Queue program simulation with 3 queues.
 
-```Install modules
+### Install modules
+```
 sudo pip3 install -r ./requirements.txt
 ```
 
-```trigger simulation
+### Trigger simulation
+```
 sudo ./main.py 1000
 ```
