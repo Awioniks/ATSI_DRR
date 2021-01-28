@@ -1,6 +1,7 @@
 from time import sleep
 from termcolor import colored
 import math
+import time
 
 
 class Queue:
@@ -20,37 +21,35 @@ class Queue:
 
     def proccess_packets(self, current_time):
         pkts_proccessed = 0
+        if self.deficit == 0:
+            self.deficit = self.initial_deficit
+
         if self.last_time_queue_proccessing:
-            if self.deficit == 0:
-                self.deficit = self.initial_deficit
             self.packets_in_queue = self.check_packets_in_queue(
                 current_time) + self.packets_to_procceed
-            self.packets_to_procceed = 0
-            if self.packets_in_queue:
-                for _ in range(self.packets_in_queue):
-                    if not self.proccess_packet_success():
-                        self.last_time_queue_proccessing = (
-                            current_time + pkts_proccessed * self.service_time
-                        )
-                        self.packets_to_procceed = self.packets_in_queue
-                        - pkts_proccessed
-                        return
-                    pkts_proccessed += 1
-                self.deficit = 0
-            else:
-                print(colored(self.queue_id, self.color), " Empty queue")
-                self.deficit = 0
-                return
-            self.last_time_queue_proccessing = (
-                current_time + pkts_proccessed * self.service_time
-            )
+
+        self.packets_to_procceed = 0
+        if self.packets_in_queue:
+            for _ in range(self.packets_in_queue):
+                if not self.proccess_packet_success():
+                    self.last_time_queue_proccessing = (
+                        current_time + pkts_proccessed * self.service_time
+                    )
+                    self.packets_to_procceed = self.packets_in_queue
+                    - pkts_proccessed
+                    return
+                pkts_proccessed += 1
+            self.deficit = 0
         else:
-            self.proccess_packet_success(first=True)
-            self.last_time_queue_proccessing = (
-                current_time + self.service_time
-            )
+            print(colored(self.queue_id, self.color), " Empty queue")
+            self.deficit = 0
+            return
+        self.last_time_queue_proccessing = (
+            current_time + pkts_proccessed * self.service_time
+        )
 
     def check_packets_in_queue(self, current_time):
+        print(self.last_time_queue_proccessing, " ", current_time)
         return math.floor(
             (current_time - self.last_time_queue_proccessing)
             / self.occurance_time
