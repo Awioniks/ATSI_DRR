@@ -12,7 +12,7 @@ class Queue:
         self.occurance_time = conf.occurance_time
         self.link_rate = conf.link_rate
         self.packet_size = conf.packet_size
-        self.last_time_queue_proccessing = 0
+        self.packets_procceded = 0
         self.packets_to_procceed = 0
         self.packets_in_queue = 1
         self.service_time = round(
@@ -23,19 +23,23 @@ class Queue:
         if self.deficit == 0:
             self.deficit = self.initial_deficit
 
-        if self.last_time_queue_proccessing:
+        if self.packets_procceded > 0:
             self.packets_in_queue = self.check_packets_in_queue(
                 current_time) + self.packets_to_procceed
 
-        self.last_time_queue_proccessing = current_time
+            # print(self.check_packets_in_queue(
+            #     current_time))
 
-        self.packets_to_procceed = 0
+        # self.packets_to_procceed = 0
+        # print(self.packets_in_queue)
         if self.packets_in_queue:
+            self.last_time_queue_proccessing = current_time
             for _ in range(self.packets_in_queue):
                 if not self.proccess_packet_success():
                     self.packets_to_procceed = self.packets_in_queue
                     - pkts_proccessed
                     return
+                self.packets_procceded += 1
                 pkts_proccessed += 1
             self.deficit = 0
         else:
@@ -45,7 +49,7 @@ class Queue:
 
     def check_packets_in_queue(self, current_time):
         return math.floor(
-            (current_time - self.last_time_queue_proccessing)
+            (current_time - (self.packets_procceded - 1) * self.occurance_time)
             / self.occurance_time
         )
 
