@@ -27,11 +27,7 @@ class Queue:
             self.packets_in_queue = self.check_packets_in_queue(
                 current_time) + self.packets_to_procceed
 
-            # print(self.check_packets_in_queue(
-            #     current_time))
-
-        # self.packets_to_procceed = 0
-        # print(self.packets_in_queue)
+        self.packets_to_procceed = 0
         if self.packets_in_queue:
             self.last_time_queue_proccessing = current_time
             for _ in range(self.packets_in_queue):
